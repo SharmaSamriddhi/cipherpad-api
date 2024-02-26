@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <title>Email Verification - Cipherpad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4"
+  >
+    <div class="max-w-md w-11/12 p-8 bg-white shadow-md rounded-md text-center">
+      <h1 class="text-2xl font-semibold mb-4">Email Verification</h1>
+      <p id="verificationStatus" class="text-gray-700">Verifying...</p>
+    </div>
+    <footer class="text-gray-800 py-4 text-center">
+      <p class="text-sm">&copy; 2024 CipherPad. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Get the token from the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+
+      // Send a request to the backend to verify the account
+      fetch("/user/verify-account", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const verificationStatusElement =
+            document.getElementById("verificationStatus");
+          if (data.status) {
+            // Account verified successfully
+            verificationStatusElement.textContent = data.message;
+          } else {
+            // Verification failed
+            verificationStatusElement.textContent = data.message;
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          const verificationStatusElement =
+            document.getElementById("verificationStatus");
+          verificationStatusElement.textContent = "Error verifying account";
+        });
+    </script>
+  </body>
+</html>

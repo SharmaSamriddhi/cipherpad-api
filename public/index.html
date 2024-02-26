@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <title>Encrypted Notes - Cipherpad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        max-width: 600px;
+      }
+      .sidebar {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 250px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+        padding-top: 60px;
+      }
+
+      @media (max-width: 767px) {
+        .lg\\:hidden {
+          display: none !important;
+        }
+
+        .sidebar {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lg:px-16 p-4 flex justify-between items-center">
+      <div class="w-36">
+        <img
+          src="https://res.cloudinary.com/dwjisi2ul/image/upload/v1707656119/dry3jbhpodfmi6naqf1g.png"
+          class="w-full"
+        />
+      </div>
+      <div class="lg:hidden">
+        <button id="toggleSidebar" class="text-gray-500 focus:outline-none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="lg:flex gap-5 hidden items-center">
+        <div class="cursor-pointer"><a href="/">Home</a></div>
+
+        <div class="cursor-pointer">
+          <a href="/#install">How to install?</a>
+        </div>
+        <div class="cursor-pointer">
+          <a href="#" onclick="openModal('verifyEmailModal')">Verify Email</a>
+        </div>
+        <div class="cursor-pointer">
+          <a href="#" onclick="openModal('resetPasswordModal')"
+            >Reset Password</a
+          >
+        </div>
+        <div
+          class="cursor-pointer bg-blue-900 hover:bg-blue-800 p-2 font-semibold text-sm rounded w-fit text-white"
+        >
+          <a href="https://www.web-cipherpad.abierta.cloud">Web Login</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+      <div class="flex justify-end p-4">
+        <button id="closeSidebar" class="text-gray-500 focus:outline-none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div onclick="closeSidebar()"><a href="/">Home</a></div>
+        <div>
+          <a href="https://www.web-cipherpad.abierta.cloud">Web Login</a>
+        </div>
+        <div onclick="closeSidebar()">
+          <a href="/#install">How to install?</a>
+        </div>
+        <div>
+          <a href="#" onclick="openModal('verifyEmailModal')">Verify Email</a>
+        </div>
+        <div>
+          <a href="#" onclick="openModal('resetPasswordModal')"
+            >Reset Password</a
+          >
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-blue-900 flex flex-col justify-center items-center gap-8 p-4"
+      style="height: 600px"
+    >
+      <div class="text-center">
+        <h1 class="text-4xl text-white font-bold mb-5">Encrypted Notes App</h1>
+        <p class="text-lg text-white mb-4">
+          Your secure companion for jotting down thoughts.
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <a
+          href="https://www.web-cipherpad.abierta.cloud"
+          class="inline-block bg-white text-blue-900 py-2 px-6 rounded-lg shadow-md hover:bg-slate-200 hover:text-blue-900 transition duration-300 mb-4"
+          >Web Login</a
+        >
+        <a
+          href="app-release.apk"
+          class="inline-block bg-white text-blue-900 py-2 px-6 rounded-lg shadow-md hover:bg-slate-200 hover:text-blue-900 transition duration-300 mb-4"
+          >Download App</a
+        >
+      </div>
+    </div>
+
+    <div
+      class="w-11/12 lg:w-10/12 mx-auto flex flex-col lg:flex-row gap-5 bg-white p-8 rounded-lg items-center"
+      style="margin-top: -5%"
+    >
+      <div class="w-full lg:w-1/2 mx-auto">
+        <img src="ss1.png" class="w-full lg:w-1/2 mx-auto" />
+      </div>
+      <div class="w-full lg:w-1/2" id="install">
+        <h2 class="text-2xl text-gray-900 font-bold mb-3">How to Install?</h2>
+
+        <ol class="list-decimal ml-6">
+          <li>Download the APK file from our website.</li>
+          <li>Open the downloaded file on your Android device.</li>
+          <li>
+            Follow the on-screen instructions to complete the installation.
+          </li>
+          <li>
+            If prompted, enable installation from unknown sources in your device
+            settings.
+          </li>
+          <li>
+            Once installed, open the app and start using it to secure your
+            notes!
+          </li>
+        </ol>
+        <p class="max-w-lg leading-relaxed text-justify mt-4">
+          **Google Play Protect may raise concerns about the installation. If
+          you encounter any warnings, you can choose to install anyway or scan
+          the APK file using Play Protect Scan before proceeding with the
+          installation.
+        </p>
+      </div>
+    </div>
+    <div class="p-4 lg:px-16 mt-10 flex justify-between items-center">
+      <div>&copy; 2024 - Cipherpad</div>
+      <div class="flex gap-5">
+        <div><a href="/data-privacy">Data Privacy</a></div>
+      </div>
+    </div>
+    <div id="resetPasswordModal" class="modal">
+      <div class="modal-content rounded w-11/12 lg:w-2/6">
+        <div class="flex justify-between items-center">
+          <div class="text-lg lg:text-xl font-medium">Reset Password</div>
+          <span
+            class="bg-red-600 hover:bg-red-800 text-white p-2 rounded cursor-pointer"
+            onclick="closeModal('resetPasswordModal')"
+            >Close</span
+          >
+        </div>
+        <form id="resetForm">
+          <div class="mt-5">
+            <label>Email ID</label>
+            <input
+              type="email"
+              id="resetEmail"
+              class="form-input mt-1 block w-full rounded-md border-gray-300 p-2 border"
+              required
+            />
+            <button
+              type="submit"
+              id="resetButton"
+              class="w-full mt-4 bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors duration-300"
+            >
+              Send Password Reset Link
+            </button>
+            <p id="resetPasswordMessage" class="my-4 text-center"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="verifyEmailModal" class="modal">
+      <div class="modal-content rounded w-11/12 lg:w-2/6">
+        <div class="flex justify-between items-center">
+          <div class="text-lg lg:text-xl font-medium">
+            Get Email Verification Link
+          </div>
+          <span
+            class="bg-red-600 hover:bg-red-800 text-white p-2 rounded cursor-pointer"
+            onclick="closeModal('verifyEmailModal')"
+            >Close</span
+          >
+        </div>
+        <form id="verifyForm">
+          <div class="mt-5">
+            <label>Email ID</label>
+            <input
+              type="email"
+              id="verifyEmail"
+              class="form-input mt-1 block w-full rounded-md border-gray-300 p-2 border"
+              required
+            />
+            <button
+              type="submit"
+              id="verifyButton"
+              class="w-full mt-4 bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-900 transition-colors duration-300"
+            >
+              Send Email Verification Link
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.add("hidden");
+      }
+      document.getElementById("sidebar").classList.add("hidden");
+      document
+        .getElementById("toggleSidebar")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("hidden");
+        });
+
+      document
+        .getElementById("closeSidebar")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.add("hidden");
+        });
+      function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+        document.getElementById("sidebar").classList.add("hidden");
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+      const resetMessage = document.getElementById("resetPasswordMessage");
+
+      resetForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        var email = document.getElementById("resetEmail").value;
+
+        try {
+          document.getElementById("resetButton").innerHTML = "Please Wait";
+          const response = await fetch("/user/reset-password/initiate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+          const data = await response.json();
+          if (data.status) {
+            document.getElementById("resetButton").innerHTML = data.message;
+          } else {
+            document.getElementById("resetButton").innerHTML = data.message;
+          }
+        } catch (error) {
+          document.getElementById("resetButton").innerHTML =
+            "Something Went Wrong";
+        }
+      });
+      verifyForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        var email = document.getElementById("verifyEmail").value;
+
+        try {
+          document.getElementById("verifyButton").innerHTML = "Please Wait";
+          const response = await fetch("/user/verify-account/initiate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+          const data = await response.json();
+          if (data.status) {
+            document.getElementById("verifyButton").innerHTML = data.message;
+          } else {
+            document.getElementById("verifyButton").innerHTML = data.message;
+          }
+        } catch (error) {
+          document.getElementById("verifyButton").innerHTML =
+            "Something Went Wrong";
+        }
+      });
+    </script>
+  </body>
+</html>
